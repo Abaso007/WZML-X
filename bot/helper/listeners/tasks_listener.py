@@ -65,7 +65,13 @@ class MirrorLeechListener:
         self.join = join
         self.leechlogmsg = None
         self.upload_details = {}
-        self.source_url = source_url if source_url and source_url.startswith('http') else ("https://t.me/share/url?url=" + source_url) if source_url else message.link
+        self.source_url = (
+            source_url
+            if source_url and source_url.startswith('http')
+            else f"https://t.me/share/url?url={source_url}"
+            if source_url
+            else message.link
+        )
         self.__setModeEng()
 
     async def clean(self):
@@ -80,8 +86,17 @@ class MirrorLeechListener:
             pass
 
     def __setModeEng(self):
-        mode = 'Leech' if self.isLeech else 'Clone' if self.isClone else 'RClone' if self.upPath not in ['gd', 'ddl'] else 'DDL' if self.upPath != 'gd' else 'GDrive'
-        mode += ' as Zip' if self.compress else ' as Unzip' if self.extract else ''
+        mode = (
+            'Leech'
+            if self.isLeech
+            else 'Clone'
+            if self.isClone
+            else 'RClone'
+            if self.upPath not in ['gd', 'ddl']
+            else 'DDL'
+            if self.upPath != 'gd'
+            else 'GDrive'
+        ) + (' as Zip' if self.compress else ' as Unzip' if self.extract else '')
         mode += f" | #{'qbit' if self.isQbit else 'ytdlp' if self.isYtdlp else 'gdrive' if (self.isClone or self.isGdrive) else 'mega' if self.isMega else 'aria2' if self.source_url else 'tg'}"
         self.upload_details['mode'] = mode
         
